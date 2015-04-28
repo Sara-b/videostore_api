@@ -5,7 +5,10 @@ class Movie
   public static function get_all_movies(){
     global $bdd;
     
-    $requete = $bdd->prepare("SELECT * FROM movies JOIN directors ON id_director=directors.id");
+    $requete = $bdd->prepare("SELECT m.id, m.title, m.description, m.picture, CONCAT(d.first_name,' ',d.last_name) as director, c.title as category
+                              FROM movies AS m
+                              JOIN directors AS d ON id_director = d.id
+                              JOIN categories AS c ON id_category = c.id");
       // l'execution 
     $requete->execute();
     $movies = $requete->fetchAll(PDO::FETCH_OBJ);
