@@ -101,6 +101,35 @@ class Customer
       }
   }
 
+  static function update_user($param){
+    global $bdd;
+
+    $requete = $bdd->prepare("UPDATE customers
+                SET mail=:mail,password=:password,first_name=:first_name,last_name=:last_name, id_country=:id_country, town=:town, address=:address, posteCode=:posteCode, phone=:phone 
+                WHERE id=:id");
+    // l'execution 
+    $requete->bindParam(':mail', $param['mail']);
+    $requete->bindParam(':password', $param['password']);
+    $requete->bindParam(':first_name', $param['first_name']);
+    $requete->bindParam(':last_name', $param['last_name']);
+    $requete->bindParam(':id_country', $param['id_country']);
+    $requete->bindParam(':town', $param['town']);
+    $requete->bindParam(':address', $param['address']);
+    $requete->bindParam(':posteCode', $param['posteCode']);
+    $requete->bindParam(':phone', $param['phone']);
+    $requete->bindParam(':id', $param['id']);
+    $requete->execute();
+  }
+
+  static function delete_user($param){
+    global $bdd;
+
+    $requete = $bdd->prepare("DELETE FROM customers
+                WHERE id=:id");
+    // l'execution 
+    $requete->bindParam(':id', $param['id']);
+    $requete->execute();
+  }
 
 }
 
