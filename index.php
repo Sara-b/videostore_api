@@ -1,7 +1,7 @@
-<?php 
+<?php  header("Access-Control-Allow-Origin: *");
+  session_start();
   //require composer autoload (load all my libraries)
   require 'vendor/autoload.php';
-  require 'rb.php';
   require 'connection_bdd.php';
   //require my models
   require 'models/Movie.php';
@@ -10,10 +10,6 @@
   require 'models/Rental.php';
   require 'models/Administrator.php';
   require 'models/category.php';
-
-  // set up database connection
-  R::setup('mysql:host=localhost;dbname=videostore','root','');
-  R::freeze(true);
 
   // Slim initialisation
   $app = new \Slim\Slim();
@@ -35,9 +31,9 @@
   //VIDEOS
   //GET all videos 
   $app->get('/videos', function () use ($app) {  
-    $movies = R::findAll('movies'); 
+    $movies = Movie::get_all_movies('movies'); 
     $app->response()->header('Content-Type', 'application/json');
-    echo json_encode(R::exportAll($movies));
+    echo json_encode($movies);
   });
 
   //GET video by id
@@ -87,22 +83,18 @@
     echo json_encode($user);
   });
 
-
-   //STORES
-  //GET all stores 
-  $app->get('/magasins', function () use ($app) {  
-    $stores = Store::get_all_store($post); 
-    $app->response()->header('Content-Type', 'application/json');
-    echo json_encode($stores);
+  //Connexion
+   $app->post('/users/connexion', function () use ($app) {  
+    $user = Customer::connexion($_POST['mail'],$_POST['password']); 
+    $app->response("connexion reussie")->header('Content-Type', 'application/json');
+    echo json_encode($user);
   });
-
-  //Get User by id
-   $app->get('/magasins/:id', function ($id) use ($app) {  
-    $store = Store::get_store_by_id($id); 
-    $app->response()->header('Content-Type', 'application/json');
-    echo json_encode($store);
+     //Connexion
+   $app->get('/users/connexion/:mail', function ($mail) use ($app) {  
+    $user = Customer::connexion2($mail); 
+    $app->response("connexion reussie")->header('Content-Type', 'application/json');
+    echo json_encode($user);
   });
-
 
    //STORES
   //GET all stores 
@@ -112,7 +104,7 @@
     echo json_encode($stores);
   });
 
-  //Get User by id
+  //Get store by id
    $app->get('/magasins/:id', function ($id) use ($app) {  
     $store = Store::get_store_by_id($id); 
     $app->response()->header('Content-Type', 'application/json');
@@ -143,23 +135,6 @@
     echo json_encode($administrators);
   });
 
-
-
-
-
-
-/*Return JSON*/
-// handle GET requests for /articles
-$app->get('/movies/:id', function ($id) use ($app) {  
-  // query database for all movies
-  $movies = Movie::get_movie_by_id($id); 
-  
-  // send response header for JSON content type
-  $app->response()->header('Content-Type', 'application/json');
-  
-  // return JSON-encoded response body with query results
-  echo json_encode($movies);
-  });
 
   $app->run();
 ?>

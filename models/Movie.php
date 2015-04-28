@@ -5,7 +5,7 @@ class Movie
   public static function get_all_movies(){
     global $bdd;
     
-    $requete = $bdd->prepare("SELECT * FROM movies");
+    $requete = $bdd->prepare("SELECT * FROM movies JOIN directors ON id_director=directors.id");
       // l'execution 
     $requete->execute();
     $movies = $requete->fetchAll(PDO::FETCH_OBJ);
@@ -131,5 +131,31 @@ class Movie
       }
       }
     }
+
+    static function update_movie($param){
+    global $bdd;
+
+    $requete = $bdd->prepare("UPDATE movies
+                SET title=:title,description=:description,picture=:picture,id_category=:id_category, id_director=:id_director 
+                WHERE id=:id");
+    // l'execution 
+    $requete->bindParam(':title', $param['title']);
+    $requete->bindParam(':description', $param['description']);
+    $requete->bindParam(':picture', $param['picture']);
+    $requete->bindParam(':id_category', $param['id_category']);
+    $requete->bindParam(':id_director', $param['id_director']);
+    $requete->bindParam(':id', $param['id']);
+    $requete->execute();
+  }
+
+    static function delete_movie($param){
+    global $bdd;
+
+    $requete = $bdd->prepare("DELETE FROM movies
+                WHERE id=:id");
+    // l'execution 
+    $requete->bindParam(':id', $param['id']);
+    $requete->execute();
+  }
 }
 ?>
