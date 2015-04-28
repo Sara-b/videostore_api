@@ -11,7 +11,15 @@ class Movie
                               JOIN categories AS c ON id_category = c.id");
       // l'execution 
     $requete->execute();
-    $movies = $requete->fetchAll(PDO::FETCH_OBJ);
+    $movies = $requete->fetchAll(PDO::FETCH_ASSOC);
+
+    for($i=0;$i<sizeof($movies);$i++) 
+    { 
+      mb_detect_encoding($movies[$i]['description'], "UTF-8") != "UTF-8" ? : $movies[$i]['description'] = utf8_encode($movies[$i]['description']);
+      mb_detect_encoding($movies[$i]['title'], "UTF-8") != "UTF-8" ? : $movies[$i]['title'] = utf8_encode($movies[$i]['title']);
+      mb_detect_encoding($movies[$i]['director'], "UTF-8") != "UTF-8" ? : $movies[$i]['director'] = utf8_encode($movies[$i]['director']); 
+      // encodage des champs texte en utf8 si il ne le sont pas. 
+    } 
     
     return $movies;
   }
@@ -64,6 +72,24 @@ class Movie
     $requete->bindParam(':picture', $post['picture']);
     $requete->bindParam(':id_category', $post['id_category']);
     $requete->bindParam(':id_director', $post['id_director']);
+    $req->execute();
+
+    return true;
+  }
+
+  public static function update_movie($post){
+    global $bdd;
+
+    $req = $bdd->prepare("UPDATE movies 
+                          SET title=:title, description=:description, picture=:picture, id_category=:id_category, id_director=:id_director)
+                          WHERE id=:id");
+
+    $requete->bindParam(':title', $post['title']);
+    $requete->bindParam(':description', $post['description']);
+    $requete->bindParam(':picture', $post['picture']);
+    $requete->bindParam(':id_category', $post['id_category']);
+    $requete->bindParam(':id_director', $post['id_director']);
+    $requete->bindParam(':id', $post['id']);
     $req->execute();
 
     return true;
