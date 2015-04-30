@@ -69,7 +69,8 @@
     $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
     echo json_encode($movie, JSON_UNESCAPED_UNICODE);
   });  
-
+  
+  //CREATE video
   $app->post('/videos', function() use($app){
     $movie = Movie::create_movie($_REQUEST);
     $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
