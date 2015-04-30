@@ -8,7 +8,8 @@
   require 'models/Store.php';
   require 'models/Rental.php';
   require 'models/Administrator.php';
-  require 'models/category.php';
+  require 'models/Category.php';
+  require 'models/Copy.php';
 
   // Slim initialisation
   $app = new \Slim\Slim();
@@ -75,6 +76,19 @@
     echo json_encode($movie, JSON_UNESCAPED_UNICODE);
   });  
 
+
+//EXEMPLAIRES
+  //GET all copies 
+  $app->get('/exemplaires', function () use ($app) {  
+    $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
+    echo json_encode( Copy::get_all_copies('movies'), JSON_UNESCAPED_UNICODE);
+  });
+
+  $app->post('/exemplaires', function() use($app){
+    $copy = Copy::create_copy($_REQUEST);
+    $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
+    echo json_encode($copy, JSON_UNESCAPED_UNICODE);
+  });  
 
 
   //CATEGORIES
