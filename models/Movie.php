@@ -114,26 +114,6 @@ class Movie
       return "";
   }
 
-<<<<<<< HEAD
-  public static function update_movie($post){
-    global $bdd;
-
-    $req = $bdd->prepare("UPDATE movies 
-                          SET title=:title, description=:description, picture=:picture, id_category=:id_category, id_director=:id_director)
-                          WHERE id=:id");
-
-    $requete->bindParam(':title', $post['title']);
-    $requete->bindParam(':description', $post['description']);
-    $requete->bindParam(':picture', $post['picture']);
-    $requete->bindParam(':id_category', $post['id_category']);
-    $requete->bindParam(':id_director', $post['id_director']);
-    $requete->bindParam(':id', $post['id']);
-    $req->execute();
-
-    return true;
-  }
-=======
->>>>>>> 079bd420ce784cfbaf58ab5af0a98f78097cfd2f
 
   public static function upload_image($movie_id){
       $target_dir = "./uploadedfiles/";
