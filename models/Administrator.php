@@ -11,7 +11,7 @@ class Administrator
     $requete = $bdd->prepare("SELECT * FROM administrator");
       // l'execution 
     $requete->execute();
-    $administrators = $requete->fetchAll(PDO::FETCH_OBJ);
+    $administrators = $requete->fetchAll(PDO::FETCH_ASSOC);
     
     return $administrators;
   }
@@ -25,7 +25,7 @@ class Administrator
       // l'execution 
     $requete->bindParam(':id', $id);
     $requete->execute();
-    $administrator = $requete->fetch(PDO::FETCH_OBJ);
+    $administrator = $requete->fetch(PDO::FETCH_ASSOC);
     
     return $administrator;
   }
@@ -39,7 +39,7 @@ class Administrator
       // l'execution 
     $requete->bindParam(':store_id', $store_id);
     $requete->execute();
-    $administrators = $requete->fetch(PDO::FETCH_OBJ);
+    $administrators = $requete->fetch(PDO::FETCH_ASSOC);
     
     return $administrators;
   }

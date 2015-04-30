@@ -12,7 +12,7 @@ class Category
     $requete = $bdd->prepare("SELECT * FROM category");
       // l'execution 
     $requete->execute();
-    $Categories = $requete->fetchAll(PDO::FETCH_OBJ);
+    $Categories = $requete->fetchAll(PDO::FETCH_ASSOC);
     
     return $Categories;
   }

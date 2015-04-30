@@ -10,7 +10,7 @@ class Customer
     $requete = $bdd->prepare("SELECT * FROM customers");
       // l'execution 
     $requete->execute();
-    $customers = $requete->fetchAll(PDO::FETCH_OBJ);
+    $customers = $requete->fetchAll(PDO::FETCH_ASSOC);
     
     return $customers;
   }
@@ -24,7 +24,7 @@ class Customer
       // l'execution 
     $requete->bindParam(':id', $id);
     $requete->execute();
-    $user = $requete->fetch(PDO::FETCH_OBJ);
+    $user = $requete->fetch(PDO::FETCH_ASSOC);
     
     return $user;
   }
@@ -61,7 +61,7 @@ class Customer
           'mail' => $mail,
           'password' => $password
           ));
-        if($user=$req->fetch(PDO::FETCH_OBJ)){
+        if($user=$req->fetch(PDO::FETCH_ASSOC)){
           return $user;
         }
         else return false;
@@ -84,13 +84,13 @@ class Customer
         $req->execute(array(
           'mail' => $mail
           ));
-        /*if($donnees=$req->fetchAll(PDO::FETCH_OBJ)){  
+        /*if($donnees=$req->fetchAll(PDO::FETCH_ASSOC)){  
           $_SESSION['id']=$donnees['id'];
           $_SESSION['mail']=$donnees['mail'];
           $_SESSION['first_name']=$donnees['first_name'];
           $_SESSION['last_name']=$donnees['last_name'];
         */
-        if($user=$req->fetchAll(PDO::FETCH_OBJ)){
+        if($user=$req->fetchAll(PDO::FETCH_ASSOC)){
           return $user;
         }
         else return false;
@@ -101,6 +101,35 @@ class Customer
       }
   }
 
+  static function update_user($param){
+    global $bdd;
+
+    $requete = $bdd->prepare("UPDATE customers
+                SET mail=:mail,password=:password,first_name=:first_name,last_name=:last_name, id_country=:id_country, town=:town, address=:address, posteCode=:posteCode, phone=:phone 
+                WHERE id=:id");
+    // l'execution 
+    $requete->bindParam(':mail', $param['mail']);
+    $requete->bindParam(':password', $param['password']);
+    $requete->bindParam(':first_name', $param['first_name']);
+    $requete->bindParam(':last_name', $param['last_name']);
+    $requete->bindParam(':id_country', $param['id_country']);
+    $requete->bindParam(':town', $param['town']);
+    $requete->bindParam(':address', $param['address']);
+    $requete->bindParam(':posteCode', $param['posteCode']);
+    $requete->bindParam(':phone', $param['phone']);
+    $requete->bindParam(':id', $param['id']);
+    $requete->execute();
+  }
+
+  static function delete_user($param){
+    global $bdd;
+
+    $requete = $bdd->prepare("DELETE FROM customers
+                WHERE id=:id");
+    // l'execution 
+    $requete->bindParam(':id', $param['id']);
+    $requete->execute();
+  }
 
 }
 

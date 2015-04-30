@@ -1,5 +1,4 @@
 <?php  header("Access-Control-Allow-Origin: *");
-  session_start();
   //require composer autoload (load all my libraries)
   require 'vendor/autoload.php';
   require 'connection_bdd.php';
@@ -31,13 +30,6 @@
   //VIDEOS
   //GET all videos 
   $app->get('/videos', function () use ($app) {  
-    /*
-    $title = Movie::get_all_movies('movies');
-    $title = mb_convert_encoding($title, "UTF-8", "HTML-ENTITIES");
-
-    header('Content-Type: application/json; Charset="UTF-8"');
-    echo json_encode(array('title' => $title));
-  */
     $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
     echo json_encode( Movie::get_all_movies('movies'), JSON_UNESCAPED_UNICODE);
   });
@@ -59,6 +51,27 @@
   //GET videos by category
   $app->get('/videos/category/:category', function($category) use($app){
     $movie = Movie::get_movie_by_category($category);
+    $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
+    echo json_encode($movie, JSON_UNESCAPED_UNICODE);
+  });  
+
+  //DELETE video
+  $app->delete('/videos/:id', function($id) use($app){
+    $result = Movie::delete_movie($id);
+    $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
+    echo json_encode($result, JSON_UNESCAPED_UNICODE);
+  }); 
+
+    //UPDATE video
+  $app->post('/videos/:id/update', function($id) use($app){
+    $movie = Movie::update_movie($_REQUEST, $id);
+    $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
+    echo json_encode($movie, JSON_UNESCAPED_UNICODE);
+  });  
+  
+  //CREATE video
+  $app->post('/videos', function() use($app){
+    $movie = Movie::create_movie($_REQUEST);
     $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
     echo json_encode($movie, JSON_UNESCAPED_UNICODE);
   });  
