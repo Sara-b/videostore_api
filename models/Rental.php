@@ -12,7 +12,7 @@ class Rental
     $requete = $bdd->prepare("SELECT * FROM rentals");
       // l'execution 
     $requete->execute();
-    $rentals = $requete->fetchAll(PDO::FETCH_OBJ);
+    $rentals = $requete->fetchAll(PDO::FETCH_ASSOC);
     
     return $rentals;
   }
@@ -24,7 +24,7 @@ class Rental
       // l'execution 
     $requete->bindParam(':id', $id);
     $requete->execute();
-    $rental = $requete->fetch(PDO::FETCH_OBJ);
+    $rental = $requete->fetch(PDO::FETCH_ASSOC);
     
     return $rental;
   }
@@ -36,7 +36,7 @@ class Rental
       // l'execution 
     $requete->bindParam(':user_id', $user_id);
     $requete->execute();
-    $rentals = $requete->fetch(PDO::FETCH_OBJ);
+    $rentals = $requete->fetch(PDO::FETCH_ASSOC);
     
     return $rentals;
   }
@@ -48,7 +48,7 @@ class Rental
       // l'execution 
     $requete->bindParam(':copy_id', $copy_id);
     $requete->execute();
-    $rentals = $requete->fetch(PDO::FETCH_OBJ);
+    $rentals = $requete->fetch(PDO::FETCH_ASSOC);
     
     return $rentals;
   }

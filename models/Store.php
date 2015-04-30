@@ -12,7 +12,7 @@ class Store
     $requete = $bdd->prepare("SELECT * FROM stores");
       // l'execution 
     $requete->execute();
-    $stores = $requete->fetchAll(PDO::FETCH_OBJ);
+    $stores = $requete->fetchAll(PDO::FETCH_ASSOC);
     
     return $stores;
   }
@@ -24,7 +24,7 @@ class Store
       // l'execution 
     $requete->bindParam(':id', $id);
     $requete->execute();
-    $store = $requete->fetch(PDO::FETCH_OBJ);
+    $store = $requete->fetch(PDO::FETCH_ASSOC);
     
     return $store;
   }

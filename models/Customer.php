@@ -10,7 +10,7 @@ class Customer
     $requete = $bdd->prepare("SELECT * FROM customers");
       // l'execution 
     $requete->execute();
-    $customers = $requete->fetchAll(PDO::FETCH_OBJ);
+    $customers = $requete->fetchAll(PDO::FETCH_ASSOC);
     
     return $customers;
   }
@@ -24,7 +24,7 @@ class Customer
       // l'execution 
     $requete->bindParam(':id', $id);
     $requete->execute();
-    $user = $requete->fetch(PDO::FETCH_OBJ);
+    $user = $requete->fetch(PDO::FETCH_ASSOC);
     
     return $user;
   }
@@ -61,7 +61,7 @@ class Customer
           'mail' => $mail,
           'password' => $password
           ));
-        if($user=$req->fetch(PDO::FETCH_OBJ)){
+        if($user=$req->fetch(PDO::FETCH_ASSOC)){
           return $user;
         }
         else return false;
@@ -84,13 +84,13 @@ class Customer
         $req->execute(array(
           'mail' => $mail
           ));
-        /*if($donnees=$req->fetchAll(PDO::FETCH_OBJ)){  
+        /*if($donnees=$req->fetchAll(PDO::FETCH_ASSOC)){  
           $_SESSION['id']=$donnees['id'];
           $_SESSION['mail']=$donnees['mail'];
           $_SESSION['first_name']=$donnees['first_name'];
           $_SESSION['last_name']=$donnees['last_name'];
         */
-        if($user=$req->fetchAll(PDO::FETCH_OBJ)){
+        if($user=$req->fetchAll(PDO::FETCH_ASSOC)){
           return $user;
         }
         else return false;

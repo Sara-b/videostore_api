@@ -27,44 +27,75 @@ class Movie
   public static function get_movie_by_id($id){
     global $bdd;
     
-    $requete = $bdd->prepare("SELECT * FROM movies 
-                                LEFT JOIN directors ON directors.id = movies.id_director
-                                WHERE movies.id=:id");
+    $requete = $bdd->prepare("SELECT m.id, m.title, m.description, m.picture, CONCAT(d.first_name,' ',d.last_name) as director, c.title as category
+                              FROM movies AS m
+                              JOIN directors AS d ON id_director = d.id
+                              JOIN categories AS c ON id_category = c.id
+                              WHERE m.id=:id");
       // l'execution 
     $requete->bindParam(':id', $id);
     $requete->execute();
-    $movie = $requete->fetch(PDO::FETCH_OBJ);
+    $movies = $requete->fetch(PDO::FETCH_ASSOC);
+
+     mb_detect_encoding($movies['description'], "UTF-8") != "UTF-8" ? : $movies['description'] = utf8_encode($movies['description']);
+     mb_detect_encoding($movies['title'], "UTF-8") != "UTF-8" ? : $movies['title'] = utf8_encode($movies['title']);
+     mb_detect_encoding($movies['director'], "UTF-8") != "UTF-8" ? : $movies['director'] = utf8_encode($movies['director']); 
+      // encodage des champs texte en utf8 si il ne le sont pas. 
     
-    return $movie;
+    
+    return $movies;
   }
 
   public static function get_movie_by_title($title){
     global $bdd;
     
-    $requete = $bdd->prepare("SELECT * FROM movies WHERE title LIKE '%$title%'");
+    $requete = $bdd->prepare("SELECT m.id, m.title, m.description, m.picture, CONCAT(d.first_name,' ',d.last_name) as director, c.title as category
+                              FROM movies AS m
+                              JOIN directors AS d ON id_director = d.id
+                              JOIN categories AS c ON id_category = c.id
+                              WHERE m.title LIKE '%$title%'");
       // l'execution 
     $requete->execute();
-    $movie = $requete->fetch(PDO::FETCH_OBJ);
+    $movies = $requete->fetchAll(PDO::FETCH_ASSOC);
+
+    for($i=0;$i<sizeof($movies);$i++) 
+    { 
+      mb_detect_encoding($movies[$i]['description'], "UTF-8") != "UTF-8" ? : $movies[$i]['description'] = utf8_encode($movies[$i]['description']);
+      mb_detect_encoding($movies[$i]['title'], "UTF-8") != "UTF-8" ? : $movies[$i]['title'] = utf8_encode($movies[$i]['title']);
+      mb_detect_encoding($movies[$i]['director'], "UTF-8") != "UTF-8" ? : $movies[$i]['director'] = utf8_encode($movies[$i]['director']); 
+      // encodage des champs texte en utf8 si il ne le sont pas. 
+    } 
     
-    return $movie;
+    return $movies;
   }
 
   public static function get_movie_by_category($category){
     global $bdd;
     
-    $requete = $bdd->prepare("SELECT * FROM movies WHERE category_id=:category");
+    $requete = $bdd->prepare("SELECT m.id, m.title as tit, m.description, m.picture, CONCAT(d.first_name,' ',d.last_name) as director, c.title as category
+                              FROM movies AS m
+                              JOIN directors AS d ON id_director = d.id
+                              JOIN categories AS c ON id_category = c.id
+                              WHERE c.id=:category");
       // l'execution 
     $requete->bindParam(':category', $category);
     $requete->execute();
-    $movie = $requete->fetch(PDO::FETCH_OBJ);
+    $movies = $requete->fetchAll(PDO::FETCH_ASSOC);
     
-    return $movie;
+    for($i=0;$i<sizeof($movies);$i++) 
+    { 
+      mb_detect_encoding($movies[$i]['description'], "UTF-8") != "UTF-8" ? : $movies[$i]['description'] = utf8_encode($movies[$i]['description']);
+      mb_detect_encoding($movies[$i]['tit'], "UTF-8") != "UTF-8" ? : $movies[$i]['tit'] = utf8_encode($movies[$i]['tit']);
+      mb_detect_encoding($movies[$i]['director'], "UTF-8") != "UTF-8" ? : $movies[$i]['director'] = utf8_encode($movies[$i]['director']); 
+      // encodage des champs texte en utf8 si il ne le sont pas. 
+    } 
+    return $movies;
   }
 
   public static function create_movie($post){
     global $bdd;
 
-    $req = $bdd->prepare("INSERT INTO movies (title, description, picture, id_category, id_director) 
+    $requete = $bdd->prepare("INSERT INTO movies (title, description, picture, id_category, id_director) 
                           VALUES (:title, :description, :picture, :id_category, :id_director)");
 
     $requete->bindParam(':title', $post['title']);
@@ -72,28 +103,16 @@ class Movie
     $requete->bindParam(':picture', $post['picture']);
     $requete->bindParam(':id_category', $post['id_category']);
     $requete->bindParam(':id_director', $post['id_director']);
-    $req->execute();
 
-    return true;
+
+
+
+    if($requete->execute())
+      return get_movie_by_id($bdd->lastInsertId());
+    else
+      return "";
   }
 
-  public static function update_movie($post){
-    global $bdd;
-
-    $req = $bdd->prepare("UPDATE movies 
-                          SET title=:title, description=:description, picture=:picture, id_category=:id_category, id_director=:id_director)
-                          WHERE id=:id");
-
-    $requete->bindParam(':title', $post['title']);
-    $requete->bindParam(':description', $post['description']);
-    $requete->bindParam(':picture', $post['picture']);
-    $requete->bindParam(':id_category', $post['id_category']);
-    $requete->bindParam(':id_director', $post['id_director']);
-    $requete->bindParam(':id', $post['id']);
-    $req->execute();
-
-    return true;
-  }
 
   public static function upload_image($movie_id){
       $target_dir = "./uploadedfiles/";
@@ -161,7 +180,7 @@ class Movie
       }
     }
 
-    static function update_movie($param){
+    static function update_movie($param, $id){
     global $bdd;
 
     $requete = $bdd->prepare("UPDATE movies
@@ -173,18 +192,25 @@ class Movie
     $requete->bindParam(':picture', $param['picture']);
     $requete->bindParam(':id_category', $param['id_category']);
     $requete->bindParam(':id_director', $param['id_director']);
-    $requete->bindParam(':id', $param['id']);
-    $requete->execute();
+    $requete->bindParam(':id', $id);
+
+    if($requete->execute())
+        return "La vidéo a été mise à jour";
+    else 
+      return "Erreur";
   }
 
-    static function delete_movie($param){
+  static function delete_movie($id){
     global $bdd;
 
     $requete = $bdd->prepare("DELETE FROM movies
                 WHERE id=:id");
     // l'execution 
-    $requete->bindParam(':id', $param['id']);
-    $requete->execute();
+    $requete->bindParam(':id', $id);
+    if($requete->execute())
+        return "La vidéo a été supprimée";
+    else 
+      return "Erreur, la vidéo n'existe pas !";
   }
 }
 ?>
