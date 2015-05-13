@@ -18,10 +18,10 @@ class Customer
   public static function get_user_by_id($id){
     global $bdd;
     
-    $requete = $bdd->prepare("SELECT cust.*, ctr.name
+    $requete = $bdd->prepare("SELECT cust . * , ctr.name
                               FROM customers AS cust
-                              LEFT JOIN countries AS ctr ON countries.id = customers.id_country
-                              WHERE customers.id=:id");
+                              LEFT JOIN countries AS ctr ON ctr.id = cust.id_country
+                              WHERE cust.id=:id");
       // l'execution 
     $requete->bindParam(':id', $id);
     $requete->execute();
