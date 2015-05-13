@@ -105,8 +105,6 @@ class Movie
     $requete->bindParam(':id_director', $post['id_director']);
 
 
-
-
     if($requete->execute())
       return get_movie_by_id($bdd->lastInsertId());
     else
@@ -202,15 +200,13 @@ class Movie
 
   static function delete_movie($id){
     global $bdd;
-
-    $requete = $bdd->prepare("DELETE FROM movies
-                WHERE id=:id");
+    $requete = $bdd->prepare("DELETE FROM movies WHERE id=:id");
     // l'execution 
     $requete->bindParam(':id', $id);
     if($requete->execute())
         return "La vidéo a été supprimée";
     else 
-      return "Erreur, la vidéo n'existe pas !";
+      return false;
   }
 }
 ?>
