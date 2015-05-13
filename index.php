@@ -57,14 +57,14 @@
   });  
 
   //DELETE video
-  $app->delete('/videos/:id', function($id) use($app){
+  $app->post('/videos/:id', function($id) use($app){
     $result = Movie::delete_movie($id);
     $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
     echo json_encode($result, JSON_UNESCAPED_UNICODE);
   }); 
 
     //UPDATE video
-  $app->post('/videos/:id/update', function($id) use($app){
+  $app->put('/videos/:id/update', function($id) use($app){
     $movie = Movie::update_movie($_REQUEST, $id);
     $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
     echo json_encode($movie, JSON_UNESCAPED_UNICODE);
@@ -129,11 +129,15 @@
     $app->response("connexion reussie")->header('Content-Type: application/json; Charset="UTF-8"');
     echo json_encode($user, JSON_UNESCAPED_UNICODE);
   });
-     //Connexion
-   $app->get('/users/connexion/:mail', function ($mail) use ($app) {  
-    $user = Customer::connexion2($mail); 
-    $app->response("connexion reussie")->header('Content-Type: application/json; Charset="UTF-8"');
-    echo json_encode($user, JSON_UNESCAPED_UNICODE);
+   //Connexion
+   $app->post('/admin/connexion', function () use ($app) {  
+    $user = Administrator::connexion($_POST['mail'],$_POST['password']); 
+    if($user!="false"){
+      $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
+      echo json_encode($user, JSON_UNESCAPED_UNICODE);
+    }
+    else
+      echo $user;
   });
 
    //STORES
