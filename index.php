@@ -116,6 +116,13 @@
     echo json_encode($user, JSON_UNESCAPED_UNICODE);
   });
 
+   //Get rentals by user
+   $app->get('/users/:id/rentals', function ($id) use ($app) {  
+    $rentals = Rental::get_rental_by_user($id);
+    $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
+    echo json_encode($rentals, JSON_UNESCAPED_UNICODE);
+  });
+
   //Connexion
    $app->post('/users/connexion', function () use ($app) {  
     $user = Customer::connexion($_POST['mail'],$_POST['password']); 
@@ -147,6 +154,15 @@
     $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
     echo json_encode($store, JSON_UNESCAPED_UNICODE);
   });
+
+   //LOCATIONS
+  //GET all rentals 
+  $app->get('/locations', function () use ($app) {  
+    $categories = Rental::get_all_rental(); 
+    $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
+    echo json_encode($categories, JSON_UNESCAPED_UNICODE);
+  });
+
 
 
 
