@@ -46,10 +46,21 @@ class Copy
     else
       return "";
   }
+
+
+  public static function delete_copy($id){
+    global $bdd;
+    $requete = $bdd->prepare("DELETE FROM copies WHERE id=:id");
+    // l'execution 
+    $requete->bindParam(':id', $id);
+    if($requete->execute())
+        return "La copie a été supprimée";
+    else 
+      return false;
+  }
+
+
+
 }
-
-
-
-
 
 ?>
