@@ -97,8 +97,12 @@
     echo json_encode($copy, JSON_UNESCAPED_UNICODE);
   }); 
 
-  
-
+  });  
+  $app->post('/copy/:id', function($id) use($app){
+    $result = Copy::delete_copy($id);
+    $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
+    echo json_encode($result, JSON_UNESCAPED_UNICODE);
+  }); 
 
   //CATEGORIES
   //GET all categories 
