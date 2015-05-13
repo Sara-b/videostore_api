@@ -9,7 +9,12 @@ class Rental
 	public static function get_all_rental(){
     global $bdd;
     
-    $requete = $bdd->prepare("SELECT * FROM rentals");
+    $requete = $bdd->prepare("SELECT r.id as id, CONCAT(UPPER(c.last_name), ' ', c.first_name) as utilisateur, m.title as film, r.loaning_date as date_emprunt, r.return_date as date_retour
+                              FROM rentals r
+                              LEFT JOIN customers c ON r.id_customer = c.id
+                              LEFT JOIN copies co ON r.id_copy = co.id
+                              LEFT JOIN movies m ON co.id_movie = m.id
+                              ORDER BY id");
       // l'execution 
     $requete->execute();
     $rentals = $requete->fetchAll(PDO::FETCH_ASSOC);
@@ -20,7 +25,9 @@ class Rental
   public static function get_rental_by_id($id){
     global $bdd;
     
-    $requete = $bdd->prepare("SELECT * FROM rentals WHERE id=:id");
+     $requete = $bdd->prepare("SELECT r.* 
+                              FROM rentals as r 
+                              WHERE id=:id");
       // l'execution 
     $requete->bindParam(':id', $id);
     $requete->execute();
@@ -32,7 +39,11 @@ class Rental
   public static function get_rental_by_user($user_id){
     global $bdd;
     
-    $requete = $bdd->prepare("SELECT * FROM rentals WHERE id_customer=:user_id");
+    $requete = $bdd->prepare("SELECT r.*, m.title as title 
+                              FROM rentals as r 
+                              LEFT JOIN copies as c ON r.id_copy = c.id
+                              LEFT JOIN movies m ON c.id_movie = m.id
+                              WHERE r.id_customer=:user_id");
       // l'execution 
     $requete->bindParam(':user_id', $user_id);
     $requete->execute();
