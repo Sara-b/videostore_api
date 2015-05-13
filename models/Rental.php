@@ -47,7 +47,7 @@ class Rental
       // l'execution 
     $requete->bindParam(':user_id', $user_id);
     $requete->execute();
-    $rentals = $requete->fetch(PDO::FETCH_ASSOC);
+    $rentals = $requete->fetchAll(PDO::FETCH_ASSOC);
     
     return $rentals;
   }
