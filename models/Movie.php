@@ -28,10 +28,9 @@ class Movie
   public static function get_movie_by_id($id){
     global $bdd;
     
-    $requete = $bdd->prepare("SELECT m.id, m.title, m.description, m.picture, CONCAT(d.first_name,' ',d.last_name) as director, c.title as category
+    $requete = $bdd->prepare("SELECT m.id, m.title, m.description, m.picture, CONCAT(d.first_name,' ',d.last_name) as director
                               FROM movies AS m
                               JOIN directors AS d ON id_director = d.id
-                              JOIN categories AS c ON id_category = c.id
                               WHERE m.id=:id");
       // l'execution 
     $requete->bindParam(':id', $id);

@@ -29,6 +29,22 @@ class Copy
     return $copies;
   }
 
+  public static function get_copies_by_movies($movie_id){
+    global $bdd;
+    
+    $requete = $bdd->prepare("SELECT c.id, c.status as status, CONCAT(UPPER(s.town), ' ', s.address) as store
+                              FROM copies AS c
+                              JOIN movies AS m ON c.id_movie = m.id
+                              JOIN stores AS s ON c.id_store = s.id
+                              WHERE m.id = :movie_id");
+      // l'execution 
+    $requete->bindParam(':movie_id', $movie_id);
+    $requete->execute();
+    $copies = $requete->fetchAll(PDO::FETCH_ASSOC); 
+    
+    return $copies;
+  }
+
    public static function create_copy($post){
     global $bdd;
 

@@ -77,6 +77,12 @@
     echo json_encode($movie, JSON_UNESCAPED_UNICODE);
   });  
 
+    $app->get('/videos/:id/exemplaires', function($id) use($app){
+    $copies = Copy::get_copies_by_movies($id);
+    $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
+    echo json_encode($copies, JSON_UNESCAPED_UNICODE);
+  });
+
 
 //EXEMPLAIRES
   //GET all copies 
@@ -89,7 +95,9 @@
     $copy = Copy::create_copy($_REQUEST);
     $app->response()->header('Content-Type: application/json; Charset="UTF-8"');
     echo json_encode($copy, JSON_UNESCAPED_UNICODE);
-  });  
+  }); 
+
+  
 
 
   //CATEGORIES
